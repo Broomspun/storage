@@ -1,5 +1,8 @@
-import {UPDATE_ADDON_PRICE, UPDATE_ADDON_OPTIONS, UPDATE_CONTAINER_SIZE,
-    UPDATE_PRICE_INFO, UPDATE_DUE_PRICE} from "./types";
+import {
+    UPDATE_ADDON_PRICE, UPDATE_ADDON_OPTIONS, UPDATE_CONTAINER_SIZE,
+    UPDATE_PRICE_INFO, UPDATE_LOCATION_INFO,
+    UPDATE_DUE_PRICE, UPDATE_WAREHOUSE_INFO, INITIALIZE_WAREHOUSE_RATES,UPDATE_SET_ORIGIN
+} from "./types";
 import Constants from './../Common/Constants'
 
 export const handleInputChange = (e) => {
@@ -85,5 +88,46 @@ export const update_price_info = ({prop, value}) => {
     return {
         type: UPDATE_PRICE_INFO,
         payload: {prop, value}
+    }
+};
+
+export const  handleLocationSelection = (location='mine', size='c16') => {
+    if (size === "c20") {
+        location = "mine";
+    }
+
+    return {
+        type: UPDATE_LOCATION_INFO,
+        payload: location
+    }
+};
+
+export const  handleWarehouseSelection = (warehouse='mine') => {
+    return {
+        type: UPDATE_WAREHOUSE_INFO,
+        payload: warehouse
+    }
+};
+
+
+/**
+ *
+ * @param w1_i: Warehouse Congers Indoor rate
+ * @param w1_o: Warehouse Congers Outdoor rate
+ * @param w2_i: Warehouse Brookfield Indoor rate
+ * @param w2_o: Warehouse Brookfield Outdoor rate
+ */
+export const initializeWarehouseRates = (w1_i, w1_o, w2_i, w2_o) => {
+    return {
+        type: INITIALIZE_WAREHOUSE_RATES,
+        payload: {w1_i: w1_i, w1_o: w1_o, w2_i: w2_i, w2_o: w2_o}
+    }
+};
+
+
+export const updateSetOrigin = (origin) => {
+    return {
+        type: UPDATE_SET_ORIGIN,
+        payload: {origin}
     }
 };

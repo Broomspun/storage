@@ -1,4 +1,6 @@
 import React from "react";
+import {connect} from 'react-redux';
+import {updateSetOrigin} from './../Actions';
 
 class MovingInputs extends React.Component {
     constructor(props) {
@@ -11,7 +13,7 @@ class MovingInputs extends React.Component {
         this.state = {
             warehouse1: props.warehouse,
             // warehouse1: "10920",
-            warehouse2: "07109", // switch to actual warehouse location when provided!
+            warehouse2: "117 Whisconier Rd, Brookfield, CT 06804, USA", // switch to actual warehouse location when provided!
             setOrigin: null
         };
 
@@ -236,6 +238,8 @@ class MovingInputs extends React.Component {
 
                     distanceInt = setOrigin.distanceInt;
 
+                    this.props.updateSetOrigin(response.originAddresses[setOrigin.index]);
+
                     this.setState({
                         setOrigin: response.originAddresses[setOrigin.index]
                     });
@@ -293,4 +297,9 @@ class MovingInputs extends React.Component {
     }
 }
 
-export default MovingInputs;
+const mapStateToProps = (state) => {
+    const { setOrigin} = state.mainReducer;
+    return {setOrigin};
+};
+export default connect(mapStateToProps, {updateSetOrigin})(MovingInputs);
+

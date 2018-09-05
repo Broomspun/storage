@@ -15,7 +15,6 @@ const StoragePerMonth = ({ rental, storage, total, selectedLocation }) => {
       {(storage !== 0) & (selectedLocation !== "mine") ? (
         <div className="line">
           <span>Indoor storage:</span>
-          <span>{storage}</span>
         </div>
       ) : ''
       }

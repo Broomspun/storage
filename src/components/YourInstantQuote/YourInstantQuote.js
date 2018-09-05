@@ -7,6 +7,10 @@ import StoragePerMonth from "./StoragePerMonth";
 import DueOnDelivery from "./DueOnDelivery";
 import FutureTransport from "./FutureTransport";
 
+import DatePicker from 'react-datepicker';
+import moment from 'moment';
+
+import 'react-datepicker/dist/react-datepicker.css';
 
 // import RoutesBing from "./RoutesBing";
 // import TollsGuru from "./TollsGuru";
@@ -20,6 +24,10 @@ class YourInstantQuote extends React.Component {
     this.formatContainerPrice = this.formatContainerPrice.bind(this);
 
     console.log('YourInstantQuote props',props)
+
+      this.state = {
+          startDate: moment()
+      };
   }
 
   formatText(text) {
@@ -73,7 +81,7 @@ class YourInstantQuote extends React.Component {
   }
 
   componentDidMount() {
-    const { getQuoteHTML, email, phone } = this.props;
+    const { getQuoteHTML, email, phone,isLongDistance } = this.props;
 
     let scrollElHeight = document
       .getElementById("scroll")
@@ -83,24 +91,26 @@ class YourInstantQuote extends React.Component {
       top: 0,
       behavior: "smooth"
     });
-    const quote = document.getElementById("quoteInfo").innerHTML;
-    // console.log(quote);
+    if(!isLongDistance) {
+        const quote = document.getElementById("quoteInfo").innerHTML;
+        // console.log(quote);
 
-    getQuoteHTML(quote);
+        getQuoteHTML(quote);
 
-    // const url = "https://www.icanstorage.com/thank-you/";
-    const pre =
-      '<!DOCTYPE html><html><head><style type="text/css">.ng-hide{display:none;}</style></head><body><div style="max-width:800px">';
-    const post = "</div></body></html>";
-    let title = "<h3>We are happy to serve you.  Your quote is below.</h3><br>";
+        // const url = "https://www.icanstorage.com/thank-you/";
+        const pre =
+            '<!DOCTYPE html><html><head><style type="text/css">.ng-hide{display:none;}</style></head><body><div style="max-width:800px">';
+        const post = "</div></body></html>";
+        let title = "<h3>We are happy to serve you.  Your quote is below.</h3><br>";
 
-    title += "<h5>Email: " + email + ", Phone: " + phone + "</h5><br>";
+        title += "<h5>Email: " + email + ", Phone: " + phone + "</h5><br>";
 
-    const footer = "<br>";
+        const footer = "<br>";
 
-    let template = pre + title + quote + footer + post;
+        let template = pre + title + quote + footer + post;
 
-    template = template.replace(/\/\"/g, '"');
+        template = template.replace(/\/\"/g, '"');
+    }
 
     // const body = {
     //     email: email || '',
@@ -127,18 +137,6 @@ class YourInstantQuote extends React.Component {
     //     console.log(response);
     //   });
   }
-    makeDate = (date) => {
-        return (date.getMonth() + 1) +
-            "/" +  date.getDate() +
-            "/" +  date.getFullYear();
-    };
-
-    getToday = ()=> {
-      let today = new Date();
-
-      return this.makeDate(today);
-
-    };
 
   render() {
     const {
@@ -280,14 +278,11 @@ class YourInstantQuote extends React.Component {
                       <strong>Pick Date:</strong>
                     </span>
                   </div>
-                  <div className="line">
-                    <input
-                      type="date"
-                      id="desiredDate"
-                      className="form-control"
-                      onChange={handleDateChange}
-                      defaultValue={this.getToday()}
-                    />
+                  <div className="line date-time-picker">
+                      <DatePicker className="form-control"
+                          selected={this.props.desiredDate}
+                          onChange={this.handleChange}
+                      />
                   </div>
                   <div className="line">
                     *Date is not guaranteed. We will call to confirm.

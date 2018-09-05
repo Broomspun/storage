@@ -6,9 +6,6 @@ import accounting from "accounting-js";
 class DueOnDelivery extends Component {
     constructor(props) {
         super(props);
-        console.log('DueOnDelivery props', props);
-
-        // this.props.initialDuePrice();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -26,7 +23,7 @@ class DueOnDelivery extends Component {
         const { damageWaiver,contentsProtection } = this.props.dueOnDelivery1.addOns;
 
         let duePrice = accounting.formatMoney(deliveryPrice+containerPrice+damageWaiver+contentsProtection);
-        console.log(deliveryPrice, containerPrice, damageWaiver, +contentsProtection);
+
         return (<React.Fragment>
             <div className="line">
                 <span><strong>Due on Delivery:</strong></span>
@@ -114,7 +111,7 @@ class DueOnDelivery extends Component {
     }
 };
 const mapStateToProps = (state) => {
-    const { dueOnDelivery1,damageWaiver, contentsProtection, deliveryPrice, selectedSize} = state.mainReducer;
-    return {dueOnDelivery1,damageWaiver, contentsProtection, deliveryPrice, selectedSize};
+    const { dueOnDelivery1,damageWaiver, contentsProtection, deliveryPrice, selectedSize, selectedLocation,selectedWarehouse} = state.mainReducer;
+    return {dueOnDelivery1,damageWaiver, contentsProtection, deliveryPrice, selectedSize, selectedLocation,selectedWarehouse};
 };
 export default connect(mapStateToProps, {handleInputChange})(DueOnDelivery);

@@ -1,7 +1,8 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 // import {connect} from 'react-redux';
-import { css } from 'react-emotion';
-import { ClipLoader } from 'react-spinners';
+import {css} from 'react-emotion';
+import {ClipLoader} from 'react-spinners';
+import moment from 'moment';
 
 import classnames from "classnames";
 import ContainerSize from "./components/ContainerSize";
@@ -11,14 +12,16 @@ import MovingInputs from "./components/MovingInputs";
 import AddOptionalItems from "./components/AddOptionalItems";
 import ContactInputs from "./components/ContactInputs";
 import YourInstantQuote from "./components/YourInstantQuote/YourInstantQuote";
-import {handleSizeSelection} from "../src/Actions";
+import {update_price_info, handleSizeSelection, initializeWarehouseRates} from "./Actions";
+
 
 import "./App.css";
 import axios from 'axios';
 
 import connect from "react-redux/es/connect/connect";
+import WarehouseOptios from "./components/WarehouseOptions";
 
-import {update_price_info} from "./Actions";
+
 
 const override = css`
     display: block;
@@ -104,7 +107,7 @@ class Main extends Component {
             liveUnloadSavings: 0,
             afterLiveUnload: 0,
             quoteRequested: false,
-            desiredDate: null,
+            desiredDate: moment(),
             quoteHTML: "",
             bing: null,
             tollguru: null,
@@ -121,7 +124,7 @@ class Main extends Component {
             .then((res)=>{
                 this.setState({miles_choice: parseInt(res.data.miles_choice)});
                 this.setState({warehouse: res.data.warehouse_choice});
-                console.log('settings', this.state);
+                this.props.initializeWarehouseRates(res.data.conger_indoor_rate,res.data.conger_outdoor_rate,res.data.brookfield_indoor_rate,res.data.brookfield_outdoor_rate);
             });
 
         this.handleServiceSelection = this.handleServiceSelection.bind(this);
@@ -158,13 +161,17 @@ class Main extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({damageWaiverSelected: nextProps.damageWaiverSelected,
-            contentsProtectionSelected: nextProps.contentsProtectionSelected,
-            selectedSize: nextProps.selectedSize
-        });
+        this.setState(
+            {
+                damageWaiverSelected: nextProps.damageWaiverSelected,
+                contentsProtectionSelected: nextProps.contentsProtectionSelected,
+                selectedSize: nextProps.selectedSize,
+                selectedLocation: nextProps.selectedLocation
+            });
     }
 
     componentDidUpdate(){
+        // console.log(this.props);
     }
 
     calculateTruckmilesFromBing = async (from, to) => {
@@ -200,6 +207,7 @@ class Main extends Component {
     };
 
     calculateTollsFromTollguru = async (from, to) => {
+        return null;
         let body = JSON.stringify({
             "from": {
                 "address": from
@@ -219,17 +227,29 @@ class Main extends Component {
             }
         });
 
-        let res = await instance.post('https://dev.tollguru.com/beta00/calc/gmaps', body);
-        try {
-            if(res.status===200) {
-                console.log('toll api', res);
-                return await res.data.routes;
-            } else {
-                return  null;
-            }
-        } catch (error) {
-            return await null;
-        }
+
+        await instance.post('https://dev.tollguru.com/beta00/calc/gmaps', body)
+            .then((res)=>console.log(res))
+            .catch(error =>{
+                if(error.response) {
+                    console.log(error.response);
+                    // return Promise.reject(error.response.data);
+
+                }
+            })
+        ;
+        // console.log('toll api', res);
+        // let res = await instance.post('https://dev.tollguru.com/beta00/calc/gmaps', body);
+        // try {
+        //     if(res.status===200) {
+        //         console.log('toll api', res);
+        //         return await res.data.routes;
+        //     } else {
+        //         return  null;
+        //     }
+        // } catch (error) {
+        //     console.log(error.response);
+        // }
     };
 
     calculateDueOnDelivery() {
@@ -309,22 +329,27 @@ class Main extends Component {
         await this.setState({
             loading: true
         });
-        console.log('xxx',this.state);
+
         const {miles_choice} = this.state;
         let res, toll_DE = 0, toll_CC=0;
+
+        console.log(this.state);
         if(miles_choice!==0) {
             res = await this.calculateTruckmilesFromBing(warehouse, location1.formattedAddress);
-            this.setState({bing: res});
-            location1.distance = res.travelDistance; //distance calculation for deliver empty container
+            if(res) {
+                this.setState({bing: res});
+                location1.distance = res.travelDistance; //distance calculation for deliver empty container
+            }
 
             res  = await this.calculateTollsFromTollguru(warehouse, location1.formattedAddress);//  toll calculation for deliver empty container
+
 
             this.setState({tollguru: res});
 
             let toll_routes ;
             let tollRouteNo = 0;
 
-            if(this.state.tollguru.length>1) {
+            if(this.state.tollguru && this.state.tollguru.length>1) {
                 toll_routes = this.state.tollguru.map(route => {
                     return {hasTolls: route.summary.hasTolls, diffs: route.summary.diffs};
                 });
@@ -332,33 +357,35 @@ class Main extends Component {
                 console.log(toll_routes);
 
                 //Route choice
-                toll_routes.forEach((route, index)=>{
-                    if(route.diffs.cheapest!==0 && route.diffs.fastest!==0 && route.hasTolls)
-                        if(tollRouteNo===0)
+                toll_routes.forEach((route, index) => {
+                    if (route.diffs.cheapest !== 0 && route.diffs.fastest !== 0 && route.hasTolls)
+                        if (tollRouteNo === 0)
                             tollRouteNo = index;
-                }) ;
+                });
+
+
+                this.setState({tollRouteNo: tollRouteNo});
+                if (this.state.tollguru[tollRouteNo].costs.prepaidCard)
+                    this.setState({tollPrice: (Math.ceil(this.state.tollguru[tollRouteNo].costs.prepaidCard * 2) / 2).toFixed(2)});
+
+                if (this.state.tollguru[tollRouteNo].costs.prepaidCard)
+                    toll_DE = (Math.ceil(this.state.tollguru[tollRouteNo].costs.prepaidCard * 2) / 2).toFixed(2);
             }
-
-            console.log('guru result',tollRouteNo);
-            this.setState({tollRouteNo: tollRouteNo});
-            if(this.state.tollguru[tollRouteNo].costs.prepaidCard)
-                this.setState({tollPrice: (Math.ceil(this.state.tollguru[tollRouteNo].costs.prepaidCard * 2) / 2).toFixed(2)});
-
-            if(this.state.tollguru[tollRouteNo].costs.prepaidCard)
-                toll_DE = (Math.ceil(this.state.tollguru[tollRouteNo].costs.prepaidCard * 2) / 2).toFixed(2);
 
             //Toll CC calculation (from their current house to their new house)
             if (selectedService === "moving" || selectedService === "both") {
-                res = await this.calculateTruckmilesFromBing(location1.formattedAddress, location2.formattedAddress);
-                this.setState({bing: res});
-                location2.distance = res.travelDistance; //distance calculation for deliver empty container
+                res = await this.calculateTruckmilesFromBing(warehouse, location2.formattedAddress);
+                if(res) {
+                    this.setState({bing: res});
+                    location2.distance = res.travelDistance; //distance calculation for deliver empty container
+                }
 
-                let routes  = await this.calculateTollsFromTollguru(location1.formattedAddress, location2.formattedAddress);//  toll calculation for deliver empty container
+                let routes  = await this.calculateTollsFromTollguru(warehouse, location2.formattedAddress);//  toll calculation for deliver empty container
 
                 let toll_routes ;
                 tollRouteNo = 0;
 
-                if(routes.length>1) {
+                if(routes && routes.length>1) {
 
                     toll_routes = routes.map(route => {
                         return {hasTolls: route.summary.hasTolls, diffs: route.summary.diffs};
@@ -373,7 +400,7 @@ class Main extends Component {
                                 tollRouteNo = index;
                     }) ;
                 }
-                if(routes[tollRouteNo].costs.prepaidCard)
+                if(routes && routes[tollRouteNo].costs.prepaidCard)
                     toll_CC = (Math.ceil(routes[tollRouteNo].costs.prepaidCard * 2) / 2).toFixed(2);
             }
         }
@@ -467,7 +494,6 @@ class Main extends Component {
             liveUnloadSavings = 0;
         }
 
-
         this.stateHelper("futureTransportCost", futureTransportCost);
         this.stateHelper("afterLiveUnload", afterLiveUnload);
         this.stateHelper("liveUnloadSavings", liveUnloadSavings);
@@ -485,7 +511,7 @@ class Main extends Component {
         console.log("isLongDistance", this.state.isLongDistance);
         console.log("liveUnloadSavings: ", liveUnloadSavings);
         console.log("afterLiveUnload: ", afterLiveUnload);
-        console.log('calcul', this.state);
+        console.log('final state', this.state);
 
         await this.setState({
             bCalculated: true,
@@ -502,9 +528,10 @@ class Main extends Component {
             price = constants.flatDeliveryPrice;
         } else if (distance > constants.flatDeliveryMiles) {
             // distance is outside flat delivery radius
-            price =
-                constants.flatDeliveryPrice +
-                (distance - constants.flatDeliveryMiles) * constants.milePrice;
+            price = distance  * constants.milePrice;
+            // price =
+            //     constants.flatDeliveryPrice +
+            //     (distance - constants.flatDeliveryMiles) * constants.milePrice;
             if (distance >= constants.longDistanceMin) {
                 // distance is greater than or equal to long distance min
                 price = distance * constants.longDistanceMilePrice;
@@ -557,7 +584,7 @@ class Main extends Component {
     }
 
     handleServiceSelection(service) {
-        console.log(this.props);
+
         const { selectedSize } = this.props;
 
         let newSize;
@@ -566,7 +593,7 @@ class Main extends Component {
             if (service !== "storage") {
                 newSize = "c16";
 
-                this.props.handleSizeSelection();
+                this.props.handleSizeSelection(newSize, service, this.props.selectedLocation);
                 this.setState(() => {
                     return {
                         selectedSize: newSize
@@ -664,11 +691,10 @@ class Main extends Component {
 
     }
 
-    handleDateChange(e) {
-        e.persist();
+    handleDateChange(date) {
         this.setState(() => {
             return {
-                desiredDate: e.target.value
+                desiredDate: date
             };
         });
     }
@@ -722,7 +748,7 @@ class Main extends Component {
                 liveUnloadSavings: 0,
                 afterLiveUnload: 0,
                 quoteRequested: false,
-                desiredDate: null
+                desiredDate: moment()
             };
         });
     }
@@ -786,12 +812,6 @@ class Main extends Component {
             selectedSize: this.state.selectedSize,
             selectedService: this.state.selectedService,
             selectedLocation: this.state.selectedLocation
-        };
-
-        const locationOptionsProps = {
-            selectedLocation: this.state.selectedLocation,
-            handleLocationSelection: this.handleLocationSelection,
-            selectedSize: this.state.selectedSize
         };
 
         const movingInputsProps = {
@@ -911,13 +931,22 @@ class Main extends Component {
                                         <React.Fragment>
                                             <hr />
                                             <div className="form-group">
-                                                <LocationOptions {...locationOptionsProps} />
+                                                <LocationOptions  />
                                             </div>
-                                            <hr />
                                         </React.Fragment>
                                     )}
 
                                     <hr />
+                                    {/* Warehouse Options */}
+                                    {(this.state.selectedService === "storage" || this.state.selectedService === "both") &&
+                                      this.props.selectedLocation==='warehouse' &&(
+                                    <div className="form-group" style={{ textAlign: "center" }}>
+                                        <WarehouseOptios />
+                                        <hr />
+                                    </div>
+                                    )}
+
+
                                     {/* Container Size Selection */}
                                     <div className="form-group" style={{ textAlign: "center" }}>
                                         <ContainerSize {...containerSizeProps} />
@@ -973,10 +1002,9 @@ class Main extends Component {
 }
 
 const mapStateToProps = (state) => {
-    const {  damageWaiverSelected,
-        contentsProtectionSelected, selectedSize,deliveryPrice
+    const {  damageWaiverSelected, contentsProtectionSelected, selectedSize,selectedLocation, deliveryPrice, selectedWarehouse,wareRates,setOrigin
     } = state.mainReducer;
-    return {damageWaiverSelected, contentsProtectionSelected, selectedSize, deliveryPrice};
+    return {damageWaiverSelected, contentsProtectionSelected, selectedSize, selectedLocation, deliveryPrice, selectedWarehouse,wareRates,setOrigin};
 };
-export default connect(mapStateToProps, {update_price_info,handleSizeSelection})(Main);
-// export default Main;
+export default connect(mapStateToProps, {update_price_info,handleSizeSelection, initializeWarehouseRates})(Main);
+
