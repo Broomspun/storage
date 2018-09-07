@@ -87,13 +87,13 @@ class Service extends React.Component {
                   Store at this location
                 </div>
                 <div className="line r-align" style={{ clear: "both" }}>
-                  Move to iCan Facility
+                  Transport to iCan Facility
                 </div>
                 <div className="line r-align" style={{ clear: "both" }}>
                   Store at iCan Facility
                 </div>
                 <div className="line r-align" style={{ clear: "both" }}>
-                  Move to {deliverTo}
+                    Transport to {deliverTo}
                 </div>
                 <div className="line r-align" style={{ clear: "both" }}>
                   Store at this location
@@ -119,7 +119,7 @@ class Service extends React.Component {
             {selectedLocation === "warehouse" && (
               <React.Fragment>
                 <div className="line r-align" style={{ clear: "both" }}>
-                  Move to iCan Facility
+                    Transport to iCan Facility
                 </div>
                 <div className="line r-align" style={{ clear: "both" }}>
                   Store at iCan Facility
@@ -127,7 +127,7 @@ class Service extends React.Component {
               </React.Fragment>
             )}
             <div className="line r-align" style={{ clear: "both" }}>
-              Move to {returnFrom}
+                Transport to {returnFrom}
             </div>
             <div className="line r-align" style={{ clear: "both" }}>
               Store at this location
@@ -142,7 +142,7 @@ class Service extends React.Component {
               Store at this location
             </div>
             <div className="line r-align" style={{ clear: "both" }}>
-              Move to {returnFrom}
+                Transport to {returnFrom}
             </div>
             <div className="line r-align" style={{ clear: "both" }}>
               Store at this location

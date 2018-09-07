@@ -1,7 +1,8 @@
 import Constants from './../Common/Constants'
 
 import {UPDATE_ADDON_PRICE, UPDATE_ADDON_OPTIONS,UPDATE_CONTAINER_SIZE,
-UPDATE_PRICE_INFO, UPDATE_LOCATION_INFO, UPDATE_WAREHOUSE_INFO, INITIALIZE_WAREHOUSE_RATES, UPDATE_SET_ORIGIN
+UPDATE_PRICE_INFO, UPDATE_LOCATION_INFO, UPDATE_WAREHOUSE_INFO, INITIALIZE_WAREHOUSE_RATES, UPDATE_SET_ORIGIN,
+    INITIALIZE_WAREHOUSES
 } from "../Actions/types";
 
 
@@ -10,8 +11,7 @@ const INITIAL_STATE = {
     contentsProtectionSelected: false,
     selectedSize: 'c16',
     selectedLocation: 'mine',
-    selectedWarehouse: 'indoor',
-    setOrigin: null, //for the closet distance
+    setOrigin_index: 0, //for the closet distance
     deliveryPrice: 0,
     dueOnDelivery1: {
         due: 0,
@@ -28,7 +28,9 @@ const INITIAL_STATE = {
         w1_o: 0,
         w2_i: 0,
         w2_o: 0,
-    }
+    },
+    warehouse1: '',
+    warehouse2: '',
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -62,7 +64,9 @@ export default (state = INITIAL_STATE, action) => {
             wareRates: {w1_i: action.payload.w1_i, w1_o: action.payload.w1_o, w2_i: action.payload.w2_i, w2_o: action.payload.w2_o}
             };
         case UPDATE_SET_ORIGIN:
-            return {...state, setOrigin: action.payload};
+            return {...state, setOrigin_index: action.payload};
+        case INITIALIZE_WAREHOUSES:
+            return {...state, warehouse1: action.payload.w1, warehouse2: action.payload.w2};
         default:
             return state;
     }

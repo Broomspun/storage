@@ -1,7 +1,8 @@
 import {
     UPDATE_ADDON_PRICE, UPDATE_ADDON_OPTIONS, UPDATE_CONTAINER_SIZE,
     UPDATE_PRICE_INFO, UPDATE_LOCATION_INFO,
-    UPDATE_DUE_PRICE, UPDATE_WAREHOUSE_INFO, INITIALIZE_WAREHOUSE_RATES,UPDATE_SET_ORIGIN
+    UPDATE_DUE_PRICE, UPDATE_WAREHOUSE_INFO, INITIALIZE_WAREHOUSE_RATES,UPDATE_SET_ORIGIN,
+    INITIALIZE_WAREHOUSES
 } from "./types";
 import Constants from './../Common/Constants'
 
@@ -125,9 +126,16 @@ export const initializeWarehouseRates = (w1_i, w1_o, w2_i, w2_o) => {
 };
 
 
+export const initializeWarehouses = (w1, w2)=>{
+    return {
+        type: INITIALIZE_WAREHOUSES,
+        payload: {w1: w1, w2: w2}
+    }
+}
+
 export const updateSetOrigin = (origin) => {
     return {
         type: UPDATE_SET_ORIGIN,
-        payload: {origin}
+        payload: origin
     }
 };

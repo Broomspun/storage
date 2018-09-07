@@ -12,15 +12,12 @@ import MovingInputs from "./components/MovingInputs";
 import AddOptionalItems from "./components/AddOptionalItems";
 import ContactInputs from "./components/ContactInputs";
 import YourInstantQuote from "./components/YourInstantQuote/YourInstantQuote";
-import {update_price_info, handleSizeSelection, initializeWarehouseRates} from "./Actions";
-
+import {update_price_info, handleLocationSelection, handleSizeSelection, initializeWarehouseRates, initializeWarehouses} from "./Actions";
 
 import "./App.css";
 import axios from 'axios';
 
 import connect from "react-redux/es/connect/connect";
-import WarehouseOptios from "./components/WarehouseOptions";
-
 
 
 const override = css`
@@ -125,6 +122,7 @@ class Main extends Component {
                 this.setState({miles_choice: parseInt(res.data.miles_choice)});
                 this.setState({warehouse: res.data.warehouse_choice});
                 this.props.initializeWarehouseRates(res.data.conger_indoor_rate,res.data.conger_outdoor_rate,res.data.brookfield_indoor_rate,res.data.brookfield_outdoor_rate);
+                this.props.initializeWarehouses(res.data.warehouse1,res.data.warehouse2);
             });
 
         this.handleServiceSelection = this.handleServiceSelection.bind(this);
@@ -189,7 +187,8 @@ class Main extends Component {
                 "vehicleLength": 30,
                 "vehicleWeight": 14000,
                 "vehicleAxles": 2
-            }
+            },
+            "avoid": "minimizeTolls"
         });
 
 
@@ -310,7 +309,6 @@ class Main extends Component {
             location2,
             selectedLocation,
             selectedService,
-            warehouse,
         } = this.state;
         let deliveryPrice;
         let returnPrice;
@@ -325,6 +323,12 @@ class Main extends Component {
             bing: null,
             bCalculated: false
         });
+
+        const {setOrigin_index, warehouse1, warehouse2} = this.props;
+
+        let warehouse = warehouse1;
+        if(setOrigin_index===1)
+            warehouse = warehouse2;
 
         await this.setState({
             loading: true
@@ -584,6 +588,16 @@ class Main extends Component {
     }
 
     handleServiceSelection(service) {
+        const {selectedService, quoteRequested} = this.state;
+
+        if(selectedService==='storage' && quoteRequested)
+            this.setState({quoteRequested: false});
+
+        if(selectedService==='moving' && quoteRequested && service==='storage')
+            this.setState({quoteRequested: false});
+
+        if(selectedService==='both' && quoteRequested && service==='storage')
+            this.setState({quoteRequested: false});
 
         const { selectedSize } = this.props;
 
@@ -601,18 +615,18 @@ class Main extends Component {
                 });
             }
         }
+
+        if(service==='both') {
+            this.props.handleLocationSelection('warehouse');
+            this.setState(() => {
+                return {
+                    selectedLocation: 'warehouse'
+                };
+            });
+        }
         this.setState({
                 selectedService: service,
         });
-
-        if(service==='storage'){
-            this.setState({location2: {
-                    name: "returnFrom",
-                    formattedAddress: null,
-                    distance: null
-                }});
-
-        }
     }
 
     handleLocationSelection(location) {
@@ -627,7 +641,6 @@ class Main extends Component {
     }
 
     handleAndValidateEmail(e) {
-        console.log('fired', e.target.value, e.target.id);
         let pattern;
         let isValid = false;
         let msg;
@@ -931,21 +944,12 @@ class Main extends Component {
                                         <React.Fragment>
                                             <hr />
                                             <div className="form-group">
-                                                <LocationOptions  />
+                                                <LocationOptions  selectedService={this.state.selectedService}/>
                                             </div>
                                         </React.Fragment>
                                     )}
 
                                     <hr />
-                                    {/* Warehouse Options */}
-                                    {(this.state.selectedService === "storage" || this.state.selectedService === "both") &&
-                                      this.props.selectedLocation==='warehouse' &&(
-                                    <div className="form-group" style={{ textAlign: "center" }}>
-                                        <WarehouseOptios />
-                                        <hr />
-                                    </div>
-                                    )}
-
 
                                     {/* Container Size Selection */}
                                     <div className="form-group" style={{ textAlign: "center" }}>
@@ -953,7 +957,7 @@ class Main extends Component {
                                     </div>
 
                                     {/* Moving Inputs */}
-                                    {this.state.warehouse && (
+                                    {this.props.warehouse1 && (
                                     <div className="form-group">
                                         <MovingInputs {...movingInputsProps} />
                                     </div>
@@ -1002,9 +1006,9 @@ class Main extends Component {
 }
 
 const mapStateToProps = (state) => {
-    const {  damageWaiverSelected, contentsProtectionSelected, selectedSize,selectedLocation, deliveryPrice, selectedWarehouse,wareRates,setOrigin
+    const {  damageWaiverSelected, contentsProtectionSelected, selectedSize,selectedLocation, deliveryPrice, wareRates,setOrigin_index, warehouse1, warehouse2
     } = state.mainReducer;
-    return {damageWaiverSelected, contentsProtectionSelected, selectedSize, selectedLocation, deliveryPrice, selectedWarehouse,wareRates,setOrigin};
+    return {damageWaiverSelected, contentsProtectionSelected, selectedSize, selectedLocation, deliveryPrice, wareRates,setOrigin_index, warehouse1, warehouse2};
 };
-export default connect(mapStateToProps, {update_price_info,handleSizeSelection, initializeWarehouseRates})(Main);
+export default connect(mapStateToProps, {update_price_info,handleSizeSelection, handleLocationSelection,initializeWarehouseRates,initializeWarehouses})(Main);
 

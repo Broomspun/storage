@@ -11,12 +11,13 @@ class LocationOptions extends React.Component {
 
    render()
     {
-        const {selectedLocation, selectedSize} = this.props;
+        const {selectedLocation, selectedSize, selectedService} = this.props;
 
         const mineBtn = classnames({
             'btn': true,
             'btn-success': selectedLocation === 'mine' ? true : false,
-            'btn-default': selectedLocation !== 'mine' ? true : false
+            'btn-default': selectedLocation !== 'mine' ? true : false,
+            'disabled': selectedService==='both'? true: false
         });
 
         const warehouseBtn = classnames({
@@ -37,7 +38,10 @@ class LocationOptions extends React.Component {
                 <div className="btn-group btn-group-justified" role="group" aria-label="...">
                     <div className="btn-group group-two" role="group">
                         <button type="button" className={mineBtn}
-                                onClick={()=>this.props.handleLocationSelection('mine', selectedSize)}>My location
+                                onClick={()=>this.props.handleLocationSelection(
+                                    selectedService==='both'? 'warehouse':'mine',
+                                    selectedSize)
+                                }>My location
                         </button>
                     </div>
                     <div className="btn-group group-two" role="group">
@@ -51,7 +55,7 @@ class LocationOptions extends React.Component {
     }
 }
 const mapStateToProps = (state) => {
-    const {selectedSize, selectedLocation, selectedWarehouse } = state.mainReducer;
-    return {selectedSize, selectedLocation, selectedWarehouse};
+    const {selectedSize, selectedLocation} = state.mainReducer;
+    return {selectedSize, selectedLocation};
 };
 export default connect(mapStateToProps, {handleLocationSelection})(LocationOptions);

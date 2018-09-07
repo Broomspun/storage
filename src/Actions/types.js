@@ -7,3 +7,4 @@ export const UPDATE_LOCATION_INFO = 'update_location_info';
 export const UPDATE_WAREHOUSE_INFO = 'update_warehouse_info';
 export const INITIALIZE_WAREHOUSE_RATES = 'inintialize_warehouse_rates';
 export const UPDATE_SET_ORIGIN = 'update_set_origin';
+export const INITIALIZE_WAREHOUSES = 'initialize_warehouses';

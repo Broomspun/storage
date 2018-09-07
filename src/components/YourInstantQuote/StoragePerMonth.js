@@ -12,16 +12,6 @@ const StoragePerMonth = ({ rental, storage, total, selectedLocation }) => {
         <span>Container rental:</span>
         <span>{rental}</span>
       </div>
-      {(storage !== 0) & (selectedLocation !== "mine") ? (
-        <div className="line">
-          <span>Indoor storage:</span>
-        </div>
-      ) : ''
-      }
-      {/*<div className="line">*/}
-        {/*<span>Total:</span>*/}
-        {/*<span>{total}</span>*/}
-      {/*</div>*/}
     </React.Fragment>
   );
 };

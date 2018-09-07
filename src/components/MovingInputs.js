@@ -11,9 +11,8 @@ class MovingInputs extends React.Component {
         this.calculateDistance = this.calculateDistance.bind(this);
 
         this.state = {
-            warehouse1: props.warehouse,
-            // warehouse1: "10920",
-            warehouse2: "117 Whisconier Rd, Brookfield, CT 06804, USA", // switch to actual warehouse location when provided!
+            warehouse1: props.warehouse1,
+            warehouse2: props.warehouse2,
             setOrigin: null
         };
 
@@ -238,7 +237,7 @@ class MovingInputs extends React.Component {
 
                     distanceInt = setOrigin.distanceInt;
 
-                    this.props.updateSetOrigin(response.originAddresses[setOrigin.index]);
+                    this.props.updateSetOrigin(setOrigin.index);
 
                     this.setState({
                         setOrigin: response.originAddresses[setOrigin.index]
@@ -298,8 +297,8 @@ class MovingInputs extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const { setOrigin} = state.mainReducer;
-    return {setOrigin};
+    const { setOrigin_index, warehouse1, warehouse2} = state.mainReducer;
+    return {setOrigin_index, warehouse1, warehouse2};
 };
 export default connect(mapStateToProps, {updateSetOrigin})(MovingInputs);
 

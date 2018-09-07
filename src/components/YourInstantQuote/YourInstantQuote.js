@@ -11,6 +11,7 @@ import DatePicker from 'react-datepicker';
 import moment from 'moment';
 
 import 'react-datepicker/dist/react-datepicker.css';
+import WarehousePerMonths from "./WarehousePerMonths";
 
 // import RoutesBing from "./RoutesBing";
 // import TollsGuru from "./TollsGuru";
@@ -208,7 +209,6 @@ class YourInstantQuote extends React.Component {
 
     const futureTransportProps = {
       selectedService,
-      selectedLocation,
       movePrice: accounting.formatMoney(movePrice),
       returnPrice: accounting.formatMoney(returnPrice),
       suggestLiveUnload,
@@ -216,8 +216,6 @@ class YourInstantQuote extends React.Component {
       liveUnloadSavings,
       afterLiveUnload: accounting.formatMoney(afterLiveUnload),
       futureTransportCost: accounting.formatMoney(futureTransportCost),
-      tollPrice: tollPrice,
-      miles_choice: miles_choice
     };
 
     return (
@@ -270,6 +268,13 @@ class YourInstantQuote extends React.Component {
                     {/*{this.props.miles_choice!==0  && tollguru && (*/}
                           {/*<TollsGuru tollguru = {tollguru} tollRouteNo={tollRouteNo}/>*/}
                     {/*)}*/}
+                    {selectedService==='storage' && selectedLocation==='warehouse' && (
+                        <WarehousePerMonths />
+                    )}
+
+                      {selectedService==='both' && selectedLocation==='warehouse' && (
+                          <WarehousePerMonths />
+                      )}
                     <FutureTransport {...futureTransportProps} />
                   </section>
                   <hr />

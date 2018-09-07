@@ -93,14 +93,6 @@ button{
   width: 100%;
 }
 
-.btn-success:hover,.btn-default:hover
- {
-  color: #333;
-  background-color: #e6e6e6;
-  border-color: #adadad;
-}
-
-
 .btn-success:focus,.btn-default:focus {
   color: #fff;
   background-color: #200442;
@@ -292,4 +284,21 @@ button {
   justify-content: center;
   align-self: center;
   flex-direction: column;
+}
+
+.btn-success:hover {
+  color: #fff;
+  background-color: #200442;
+  border-color: #200442;
+}
+
+.btn-default:hover {
+  background-color: #eee;
+  border-color: #bbb!important;
+  width: 100%;
+  color: black;
+}
+
+.warehouse:first-letter{
+  text-transform: uppercase;
 }

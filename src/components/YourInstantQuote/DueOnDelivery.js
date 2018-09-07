@@ -69,22 +69,22 @@ class DueOnDelivery extends Component {
 
             {dueOnDelivery.addOns &&
             <React.Fragment>
-                {dueOnDelivery.addOns.damageWaiver !== 0 &&
+                {damageWaiver !== 0 &&
                 <div className='line'>
                 <span>
                     Damage Waiver:
                 </span>
-                    <span>{damageWaiver}
+                    <span>{accounting.formatMoney(damageWaiver)}
                 </span>
                 </div>
                 }
 
-                {dueOnDelivery.addOns.contentsProtection !== 0 &&
+                {contentsProtection !== 0 &&
                 <div className='line'>
                 <span>
                     Contents Protection:
                 </span>
-                    <span> {contentsProtection}
+                    <span> {accounting.formatMoney(contentsProtection)}
                 </span>
                 </div>
                 }
@@ -111,7 +111,7 @@ class DueOnDelivery extends Component {
     }
 };
 const mapStateToProps = (state) => {
-    const { dueOnDelivery1,damageWaiver, contentsProtection, deliveryPrice, selectedSize, selectedLocation,selectedWarehouse} = state.mainReducer;
-    return {dueOnDelivery1,damageWaiver, contentsProtection, deliveryPrice, selectedSize, selectedLocation,selectedWarehouse};
+    const { dueOnDelivery1,damageWaiver, contentsProtection, deliveryPrice, selectedSize, selectedLocation,selectedWarehouse,wareRates,setOrigin_index, warehouse1, warehouse2} = state.mainReducer;
+    return {dueOnDelivery1,damageWaiver, contentsProtection, deliveryPrice, selectedSize, selectedLocation,selectedWarehouse,wareRates,setOrigin_index, warehouse1, warehouse2};
 };
 export default connect(mapStateToProps, {handleInputChange})(DueOnDelivery);
