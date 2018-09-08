@@ -31,12 +31,12 @@ class WarehousePerMonths extends Component {
                     <span><strong>Storage Options at iCan Facility:</strong></span>
                 </div>
                 <div className="line">
-                    <span className="warehouse">Indoor(monthly) </span>
-                    <span>{accounting.formatMoney(indoor)}</span>
+                    <span className="warehouse">Indoor (monthly) </span>
+                    <span style={{float:'right',textAlign: 'right'}}>{accounting.formatMoney(indoor)}</span>
                 </div>
                 <div className="line">
-                    <span className="warehouse">Outdoor(monthly) </span>
-                    <span>{accounting.formatMoney(outdoor)}</span>
+                    <span className="warehouse">Outdoor (monthly) </span>
+                    <span style={{float:'right',textAlign: 'right'}}>{accounting.formatMoney(outdoor)}</span>
                 </div>
                 <hr />
             </React.Fragment>

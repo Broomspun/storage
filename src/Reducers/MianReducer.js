@@ -1,8 +1,7 @@
-import Constants from './../Common/Constants'
 
 import {UPDATE_ADDON_PRICE, UPDATE_ADDON_OPTIONS,UPDATE_CONTAINER_SIZE,
 UPDATE_PRICE_INFO, UPDATE_LOCATION_INFO, UPDATE_WAREHOUSE_INFO, INITIALIZE_WAREHOUSE_RATES, UPDATE_SET_ORIGIN,
-    INITIALIZE_WAREHOUSES
+    INITIALIZE_WAREHOUSES, INITIALIZE_ICAN
 } from "../Actions/types";
 
 
@@ -15,7 +14,7 @@ const INITIAL_STATE = {
     deliveryPrice: 0,
     dueOnDelivery1: {
         due: 0,
-        containerPrice: Constants.c16Price,
+        containerPrice: 0.0,
         addOns: {
             damageWaiver: 0,
             contentsProtection: 0
@@ -31,6 +30,20 @@ const INITIAL_STATE = {
     },
     warehouse1: '',
     warehouse2: '',
+    email_lists: '',
+    milePrice: 0.0,
+    c16Price: 0.0,
+    c20Price: 0.0,
+    flatDeliveryPrice: 0.0,
+    flatDeliveryMiles: 0.0,
+    waitPrice: 0.0,
+    mandatoryLiveUnloadMiles: 0.0,
+    minLiveUnloadSave: 0.0,
+    damageWaiverPrice:0.0,
+    contentsProtectionPrice: 0.0,
+    longDistanceMin: 0.0,
+    longDistanceMilePrice: 0.0,
+    warehouse_names:{}
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -41,7 +54,7 @@ export default (state = INITIAL_STATE, action) => {
                 dueOnDelivery1: {...state.dueOnDelivery1,
                     addOns: {
                         ...state.dueOnDelivery1.addOns,
-                        [action.payload.prop]: action.payload.value
+                        [action.payload.prop]: action.payload.value? state[`${action.payload.prop}Price`]:0
                     }
                 },
             };
@@ -50,7 +63,7 @@ export default (state = INITIAL_STATE, action) => {
         case UPDATE_CONTAINER_SIZE:
             return {...state, selectedSize: action.payload.size,
                 dueOnDelivery1: {...state.dueOnDelivery1,
-                    containerPrice: action.payload.containerPrice
+                    containerPrice: action.payload.size=='c16'? state.c16Price : state.c20Price
                 },
             };
         case UPDATE_PRICE_INFO:
@@ -66,7 +79,11 @@ export default (state = INITIAL_STATE, action) => {
         case UPDATE_SET_ORIGIN:
             return {...state, setOrigin_index: action.payload};
         case INITIALIZE_WAREHOUSES:
-            return {...state, warehouse1: action.payload.w1, warehouse2: action.payload.w2};
+            return {...state, warehouse1: action.payload.w1, warehouse2: action.payload.w2, email_lists: action.payload.email_lists};
+        case INITIALIZE_ICAN:
+            return {...state, ...action.payload, dueOnDelivery1: {...state.dueOnDelivery1,
+                    containerPrice: action.payload.containerSize
+                }};
         default:
             return state;
     }

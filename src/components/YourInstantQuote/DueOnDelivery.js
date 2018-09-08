@@ -6,6 +6,7 @@ import accounting from "accounting-js";
 class DueOnDelivery extends Component {
     constructor(props) {
         super(props);
+        console.log('dueOn init', props)
     }
 
     componentWillReceiveProps(nextProps) {
@@ -16,7 +17,7 @@ class DueOnDelivery extends Component {
     }
 
     render(){
-        const { rental, storage, dueOnDelivery, movingKit, due } = this.props;
+        const { rental, storage, dueOnDelivery, due } = this.props;
 
         const { deliveryPrice } = this.props;
         const { containerPrice } = this.props.dueOnDelivery1;
@@ -29,43 +30,11 @@ class DueOnDelivery extends Component {
                 <span><strong>Due on Delivery:</strong></span>
                 {/*<span className="pull-right">{due}</span>*/}
             </div>
-            {/*<div className='line'>*/}
-            {/*<span>*/}
-            {/*<strong>Due on Delivery:</strong>*/}
-            {/*</span>*/}
-            {/*</div>*/}
             <div className='line'>
             <span>
                 *Tax not included
             </span>
             </div>
-            {/*<div className='line'>*/}
-            {/*<span>*/}
-            {/*Delivery Price:*/}
-            {/*</span>*/}
-            {/*<span>*/}
-            {/*{deliveryPrice}*/}
-            {/*</span>*/}
-            {/*</div>*/}
-            {/*<div className='line'>*/}
-            {/*<span>*/}
-            {/*Container Price:*/}
-            {/*</span>*/}
-            {/*<span>*/}
-            {/*{rental}*/}
-            {/*</span>*/}
-            {/*</div>*/}
-            {/* Uncomment to include warehouse storage first month as part of due on delivery */}
-            {/* {this.formatContainerPrice().storage !== 0 &&
-        <div className='line'>
-            <span>
-                Container Storage:
-            </span>
-            <span>
-                {accounting.formatMoney(this.formatContainerPrice().storage)}
-            </span>
-        </div>
-        } */}
 
             {dueOnDelivery.addOns &&
             <React.Fragment>
@@ -74,7 +43,7 @@ class DueOnDelivery extends Component {
                 <span>
                     Damage Waiver:
                 </span>
-                    <span>{accounting.formatMoney(damageWaiver)}
+                    <span style={{float:'right',textAlign: 'right'}}>{accounting.formatMoney(damageWaiver)}
                 </span>
                 </div>
                 }
@@ -82,27 +51,18 @@ class DueOnDelivery extends Component {
                 {contentsProtection !== 0 &&
                 <div className='line'>
                 <span>
-                    Contents Protection:
+                    Contents Protection 5K:
                 </span>
-                    <span> {accounting.formatMoney(contentsProtection)}
+                    <span style={{float:'right',textAlign: 'right'}}> {accounting.formatMoney(contentsProtection)}
                 </span>
                 </div>
                 }
 
-                {dueOnDelivery.addOns.movingKit !== 0 &&
-                <div className='line'>
-                <span>
-                    Moving Kit:
-                </span>
-                    <span>{movingKit}
-                </span>
-                </div>
-                }
 
                 <div className='line'>
                     <span>Total: </span>
                     {/*<span>{due}</span>*/}
-                    <span>{duePrice}</span>
+                    <span style={{float:'right',textAlign: 'right'}}>{duePrice}</span>
                 </div>
             </React.Fragment>
             }

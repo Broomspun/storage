@@ -1,6 +1,5 @@
 import React from "react";
 import {connect} from 'react-redux';
-import Constants from './../Common/Constants'
 
 import classnames from 'classnames';
 import {handleSizeSelection} from "../Actions";
@@ -54,7 +53,7 @@ class ContainerSize extends React.Component {
                     <div className={c16Btn} onClick={()=>this.props.handleSizeSelection('c16',selectedService, selectedLocation)}>
                         <h1 className="text-center white">16′</h1>
                         <p>Holds 3-4 rooms</p>
-                        <p className='price-16'>${Constants.c16Price}.00/month</p>
+                        <p className='price-16'>${this.props.c16Price}.00/month</p>
                         {!c16 && <p className='unavailable'>Currently unavailable</p>}
                     </div>
                 </div>
@@ -62,7 +61,7 @@ class ContainerSize extends React.Component {
                     <div className={c20Btn} onClick={()=>this.props.handleSizeSelection('c20',selectedService, selectedLocation)}>
                         <h1 className="text-center white">20′</h1>
                         <p>Holds 4-5 rooms</p>
-                        <p className='price-20'>${Constants.c20Price}.00/month</p>
+                        <p className='price-20'>${this.props.c20Price}.00/month</p>
                         {!c20 && <p className='unavailable'>Currently unavailable</p>}
                     </div>
                 </div>
@@ -71,9 +70,24 @@ class ContainerSize extends React.Component {
     }
 }
 const mapStateToProps = (state) => {
-    const {  damageWaiverSelected, contentsProtectionSelected,damageWaiver, contentsProtection,selectedSize
+    const {
+        damageWaiverSelected,
+        contentsProtectionSelected,
+        damageWaiver,
+        contentsProtection,
+        selectedSize,
+        c16Price,
+        c20Price,
     } = state.mainReducer;
-    return {damageWaiverSelected, contentsProtectionSelected,damageWaiver, contentsProtection,selectedSize};
+    return {
+        damageWaiverSelected,
+        contentsProtectionSelected,
+        damageWaiver,
+        contentsProtection,
+        selectedSize,
+        c16Price,
+        c20Price,
+    };
 };
 export default connect(mapStateToProps, {handleSizeSelection})(ContainerSize);
 

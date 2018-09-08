@@ -10,7 +10,6 @@ class FutureTransport extends React.Component {
             liveUnloadSavings, afterLiveUnload, futureTransportCost,selectedLocation,deliveryPrice
         } = this.props;
 
-        console.log('zzz', this.props);
 
         let futureTransportCost1 = accounting.unformat(futureTransportCost);
         let movePrice1 = accounting.unformat(movePrice);
@@ -23,7 +22,6 @@ class FutureTransport extends React.Component {
                 futureTransportCost1 = deliveryPrice;
             }
         }
-        console.log('moveprice1', movePrice1);
 
         return (
             <React.Fragment>
@@ -46,18 +44,18 @@ class FutureTransport extends React.Component {
                     {selectedService === "moving" && <span>Move Price:</span>}
 
                     {/* movePrice here */}
-                    {movePrice1>0 && <span>{accounting.formatMoney(movePrice1)}</span>}
+                    {movePrice1>0 && <span style={{float:'right',textAlign: 'right'}}>{accounting.formatMoney(movePrice1)}</span>}
                 </div>
-                <div className="line">
-                    <span>Pick Up Price:</span>
-                    <span> {returnPrice}</span>
+                <div className="line" style={{justifyContent: 'space-between'}}>
+                    <span>Final Pick Up Price:</span>
+                    <span style={{float:'right',textAlign: 'right'}}> {returnPrice}</span>
                 </div>
 
                 {/* not mandatory live unload */}
                 {!isMandatoryLiveUnload && (
-                    <div className="line">
-                        <span>Total Future Costs:</span>
-                        <span>{accounting.formatMoney(futureTransportCost1)}</span>
+                    <div className="line" style={{justifyContent: 'space-between'}}>
+                        <span>Total Future Transportation Costs:</span>
+                        <span style={{float:'right',textAlign: 'right'}}>{accounting.formatMoney(futureTransportCost1)}</span>
                     </div>
                 )}
 
@@ -65,16 +63,16 @@ class FutureTransport extends React.Component {
                 {suggestLiveUnload &&
                 !isMandatoryLiveUnload && (
                     <React.Fragment>
-                        <div className="saveMoneyWithLiveUnload line">
+                        <div className="saveMoneyWithLiveUnload line" style={{justifyContent: 'space-between'}}>
                             Save money with live unload!
                         </div>
                         <div className="line">
                             <span>Live Unload Savings:</span>
-                            <span>{liveUnloadSavings}</span>
+                            <span style={{float:'right',textAlign: 'right'}}>{liveUnloadSavings}</span>
                         </div>
-                        <div className="line">
+                        <div className="line" >
                             <span>Total with Live Unload Discount:</span>
-                            <span> {afterLiveUnload}</span>
+                            <span style={{float:'right',textAlign: 'right'}}> {afterLiveUnload}</span>
                         </div>
                     </React.Fragment>
                 )}
@@ -87,12 +85,12 @@ class FutureTransport extends React.Component {
                 <span>
                 Live Unload Savings:
                 </span>
-                            <span>{liveUnloadSavings}
+                            <span style={{float:'right',textAlign: 'right'}}>{liveUnloadSavings}
                 </span>
                         </div>
                         <div className="line">
                             <span>Total:</span>
-                            <span> {afterLiveUnload}</span>
+                            <span style={{float:'right',textAlign: 'right'}}> {afterLiveUnload}</span>
                         </div>
                         <div className="line">
               <span>

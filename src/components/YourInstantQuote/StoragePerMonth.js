@@ -1,19 +1,28 @@
 import React from "react";
+import {connect} from 'react-redux';
+import {handleInputChange} from "../../Actions";
 
-const StoragePerMonth = ({ rental, storage, total, selectedLocation }) => {
-  return (
-    <React.Fragment>
-      <div className="line">
+class StoragePerMonth extends React.Component {
+    render() {
+        const { rental, selectedSize} = this.props;
+        return (
+            <React.Fragment>
+                <div className="line">
         <span>
           <strong>Storage per Month:</strong>
         </span>
-      </div>
-      <div className="line">
-        <span>Container rental:</span>
-        <span>{rental}</span>
-      </div>
-    </React.Fragment>
-  );
+                </div>
+                <div className="line">
+                    <span>Container rental ({selectedSize==='c16'? "16'": "20'"}) :</span>
+                    <span style={{float: 'right', textAlign: 'right'}}>{rental}</span>
+                </div>
+            </React.Fragment>
+        );
+    }
 };
+const mapStateToProps = (state) => {
+    const { selectedSize} = state.mainReducer;
+    return {selectedSize};
+};
+export default connect(mapStateToProps, {handleInputChange})(StoragePerMonth);
 
-export default StoragePerMonth;

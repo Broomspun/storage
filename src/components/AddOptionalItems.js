@@ -8,8 +8,6 @@ class AddOptionalItems extends React.Component {
     const {
       damageWaiverPrice,
       contentsProtectionPrice,
-      // movingKitPrice,
-      // handleInputChange
     } = this.props;
 
     return (
@@ -63,9 +61,12 @@ class AddOptionalItems extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-    const {  damageWaiverSelected, contentsProtectionSelected,damageWaiver, contentsProtection
+    const {  damageWaiverSelected, contentsProtectionSelected,damageWaiver, contentsProtection,
+        damageWaiverPrice,contentsProtectionPrice
     } = state.mainReducer;
-    return {damageWaiverSelected, contentsProtectionSelected,damageWaiver, contentsProtection};
+    return {damageWaiverSelected, contentsProtectionSelected,damageWaiver, contentsProtection,
+        damageWaiverPrice,contentsProtectionPrice
+    };
 };
 export default connect(mapStateToProps, {handleInputChange})(AddOptionalItems);
 // export default AddOptionalItems;

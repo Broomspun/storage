@@ -28,12 +28,12 @@ class LocationOptions extends React.Component {
         });
         return (
             <React.Fragment>
-                {selectedLocation==='mine' && (
+                {/*{selectedLocation==='mine' && (*/}
                 <h5>I will store my stuff at:</h5>
-                )}
-                {selectedLocation==='warehouse' && (
-                    <h5>iCan Storage Facility</h5>
-                )}
+                {/*)}*/}
+                {/*{selectedLocation==='warehouse' && (*/}
+                    {/*<h5>iCan Storage Facility</h5>*/}
+                {/*)}*/}
 
                 <div className="btn-group btn-group-justified" role="group" aria-label="...">
                     <div className="btn-group group-two" role="group">
@@ -46,7 +46,7 @@ class LocationOptions extends React.Component {
                     </div>
                     <div className="btn-group group-two" role="group">
                         <button type="button" className={warehouseBtn}
-                                onClick={()=>this.props.handleLocationSelection('warehouse', selectedSize)}>Your warehouse
+                                onClick={()=>this.props.handleLocationSelection('warehouse', selectedSize)}>iCan Storage Facility
                         </button>
                     </div>
                 </div>

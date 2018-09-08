@@ -155,7 +155,7 @@ class Service extends React.Component {
         </div>
         <hr />
           <div className="line"><span><strong>Initial Delivery to {deliverTo} :</strong></span></div>
-          <div className="line"><span>Delivery:</span><span>{accounting.formatMoney(deliveryPrice)}</span></div>
+          <div className="line"><span>Delivery:</span><span style={{float:'right',textAlign: 'right'}}>{accounting.formatMoney(deliveryPrice)}</span></div>
       </React.Fragment>
     );
   }

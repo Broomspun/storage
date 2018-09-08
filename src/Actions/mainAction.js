@@ -1,10 +1,9 @@
 import {
     UPDATE_ADDON_PRICE, UPDATE_ADDON_OPTIONS, UPDATE_CONTAINER_SIZE,
     UPDATE_PRICE_INFO, UPDATE_LOCATION_INFO,
-    UPDATE_DUE_PRICE, UPDATE_WAREHOUSE_INFO, INITIALIZE_WAREHOUSE_RATES,UPDATE_SET_ORIGIN,
-    INITIALIZE_WAREHOUSES
+    UPDATE_WAREHOUSE_INFO, INITIALIZE_WAREHOUSE_RATES,UPDATE_SET_ORIGIN,
+    INITIALIZE_WAREHOUSES,INITIALIZE_ICAN
 } from "./types";
-import Constants from './../Common/Constants'
 
 export const handleInputChange = (e) => {
     e.persist();
@@ -49,12 +48,12 @@ const updateAddonPrice = (dispatch, key, value) =>{
     if(key==='damageWaiverSelected')
         dispatch({
             type: UPDATE_ADDON_PRICE,
-            payload: {prop: 'damageWaiver', value: value ? Constants.damageWaiverPrice: 0}
+            payload: {prop: 'damageWaiver', value: value}
         });
     else
         dispatch({
             type: UPDATE_ADDON_PRICE,
-            payload: {prop: 'contentsProtection', value: value? Constants.contentsProtectionPrice:0}
+            payload: {prop: 'contentsProtection', value: value}
         })
 };
 /**
@@ -75,13 +74,9 @@ export const handleSizeSelection = (size='c16', service='moving', location='ware
             size = "c16";
         }
     }
-    let containerPrice= Constants.c16Price;
-    if(size=='c20')
-        containerPrice = Constants.c20Price;
-
     return {
         type: UPDATE_CONTAINER_SIZE,
-        payload: {size:size, containerPrice: containerPrice}
+        payload: {size:size}
         }
 };
 
@@ -118,18 +113,28 @@ export const  handleWarehouseSelection = (warehouse='mine') => {
  * @param w2_i: Warehouse Brookfield Indoor rate
  * @param w2_o: Warehouse Brookfield Outdoor rate
  */
-export const initializeWarehouseRates = (w1_i, w1_o, w2_i, w2_o) => {
+export const initializeWarehouseRates = (indoors, outdoors) => {
+
     return {
         type: INITIALIZE_WAREHOUSE_RATES,
-        payload: {w1_i: w1_i, w1_o: w1_o, w2_i: w2_i, w2_o: w2_o}
+        payload: {w1_i: indoors[0], w1_o: outdoors[0], w2_i: indoors[1], w2_o: outdoors[1]}
     }
 };
 
+export const initializeIcan = (props)=> {
+  return {
+      type: INITIALIZE_ICAN,
+      payload: props
 
-export const initializeWarehouses = (w1, w2)=>{
+  }
+};
+
+
+export const initializeWarehouses = (warehouses, email_lists)=>{
+    let ww =  warehouses.split('/');
     return {
         type: INITIALIZE_WAREHOUSES,
-        payload: {w1: w1, w2: w2}
+        payload: {w1: ww[0], w2: ww[1], email_lists:email_lists}
     }
 }
 
